@@ -1,6 +1,7 @@
 ---
 title: Skateboard
 output: github_document
+author: Daisy
 ---
 
 **Collapse all chunks with Alt+O / Cmd+Option+O**
