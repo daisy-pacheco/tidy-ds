@@ -38,9 +38,9 @@ A common way to explore data is by counting rows:
 * Confirm no `country` has more than one row using `count()` and `filter()`.
 
 ```{r count-1, eval=FALSE}
-messy %>% _____(continent)
+messy %>% count(continent)
 
-messy %>% _____(country) %>% ______(_ > 1)
+messy %>% count(country) %>% filter(n > 1)
 ```
 
 ```{r count-2, echo=TRUE}
@@ -82,7 +82,7 @@ life_exp1
 
 ```{r summarize-across-1, eval=FALSE}
 life_exp1 %>% 
-  _________(across(-_________, mean))
+  summarise(across(-continent, mean))
 ```
 
 ```{r summarize-across-2, echo=FALSE}
@@ -100,9 +100,9 @@ life_exp1 %>%
 
 ```{r summarise-group-by-1, eval=FALSE}
 by_continent <- life_exp1 %>% 
-  ________(continent) %>% 
+  group_by(continent) %>% 
   summarize(across(everything(), mean), n = n()) %>% 
-  ________(n)
+  relocate(n)
 
 by_continent
 ```
@@ -126,8 +126,8 @@ by_continent
 
 ```{r summarize-rowwise-1, eval=FALSE}
 total <- by_continent %>% 
-  _______(continent) %>% 
-  _________(life_expectancy = ____(c_across()), se = __(c_across()) / sqrt(_))
+  rowwise(continent) %>% 
+  summarise(life_expectancy = mean(c_across()), se = sd(c_across()) / sqrt(n))
 
 total
 ```
@@ -148,10 +148,10 @@ total
 
 ```{r geom-col-1, eval=FALSE}
 total %>% 
-  ggplot(___(_________, life_expectancy)) +
-  geom____() +
-  _____________(aes(ymin = life_expectancy, ymax = _______________ + se)) +
-  ____(_____ = "Mean life expectancy (1952-2007)")
+  ggplot(aes(continent, life_expectancy)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = life_expectancy, ymax = life_expectancy + se)) +
+  labs(title = "Mean life expectancy (1952-2007)")
 ```
 
 ```{r geom-col-2, echo=FALSE}
